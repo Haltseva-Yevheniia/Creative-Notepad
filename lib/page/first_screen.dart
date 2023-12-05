@@ -11,6 +11,7 @@ class FirstScreen extends StatefulWidget {
 class _FirstScreenState extends State<FirstScreen> {
 
   TextEditingController noteTextController = TextEditingController();
+  List<String> notes = [];
 
   @override
   Widget build(BuildContext context) {
