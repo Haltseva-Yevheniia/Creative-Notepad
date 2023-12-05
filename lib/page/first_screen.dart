@@ -10,7 +10,7 @@ class FirstScreen extends StatefulWidget {
 
 class _FirstScreenState extends State<FirstScreen> {
 
-  List<String> dataList = [];
+  List<String> notes = [];
 
   @override
   Widget build(BuildContext context) {
