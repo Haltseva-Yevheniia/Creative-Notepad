@@ -9,6 +9,9 @@ class FirstScreen extends StatefulWidget {
 }
 
 class _FirstScreenState extends State<FirstScreen> {
+
+  List<String> dataList = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
