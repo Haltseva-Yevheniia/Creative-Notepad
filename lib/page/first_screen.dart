@@ -18,6 +18,39 @@ class _FirstScreenState extends State<FirstScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blueGrey,
+        centerTitle: true,
+        title: const Text(
+         'Notepad',
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            letterSpacing: 3,
+          ),
+        ),
+          actions: const [
+            Icon(Icons.ac_unit, size: 30.0),
+            Icon(Icons.account_balance_sharp, size: 30.0),
+          ],
+         ),
+
+      body: notes.isEmpty ? const Center(
+          child: Text(
+                'Ваш нотаток пустий, додайте замітку',
+              style: TextStyle(
+                fontSize: 17.0,
+                fontWeight: FontWeight.w500,
+              ),
+             ),
+            )
+          : ListView.builder(
+           itemCount: notes.length,
+           itemBuilder: (context, index){
+             return const ListTile(
+
+            );
+          },
+      ),
       floatingActionButton: FloatingActionButton(onPressed: (){}),
     );
   }
