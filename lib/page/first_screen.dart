@@ -1,4 +1,5 @@
 
+import 'package:creative_notepad/components/note_model.dart';
 import 'package:flutter/material.dart';
 
 class FirstScreen extends StatefulWidget {
@@ -11,7 +12,7 @@ class FirstScreen extends StatefulWidget {
 class _FirstScreenState extends State<FirstScreen> {
 
   TextEditingController noteTextController = TextEditingController();
-  List<String> notes = [];
+  List<NoteModel> notes = [];
 
 
 
@@ -29,6 +30,8 @@ class _FirstScreenState extends State<FirstScreen> {
           ),
         ),
           actions: const [
+
+            //TODO Oleg change icons to notes or notepad or paper
             Icon(Icons.ac_unit, size: 30.0),
             Icon(Icons.account_balance_sharp, size: 30.0),
           ],
@@ -51,7 +54,13 @@ class _FirstScreenState extends State<FirstScreen> {
             );
           },
       ),
-      floatingActionButton: FloatingActionButton(onPressed: (){}),
+      floatingActionButton: FloatingActionButton(onPressed: (){
+       // TODO Oleg Add icon to this button
+
+        // TODO Vitalik function showDialog... with AlertDialog with TextField for noteText and TextField with Calendar for deadline
+
+
+      }),
     );
   }
 }
