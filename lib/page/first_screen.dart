@@ -1,6 +1,7 @@
 
 import 'package:creative_notepad/components/note_model.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FirstScreen extends StatefulWidget {
   const FirstScreen({super.key});
@@ -12,9 +13,36 @@ class FirstScreen extends StatefulWidget {
 class _FirstScreenState extends State<FirstScreen> {
 
   TextEditingController noteTextController = TextEditingController();
-  List<NoteModel> notes = [];
+  List<String> notes = ['buy', 'prise'];
+  List<String> deadlines=['02/01/2024', '20/12/2023'];
+  List<NoteModel> notesToScreen = [];
 
+  void saveNotes() async {
+final SharedPreferences prefs = await SharedPreferences.getInstance();
+prefs.setStringList('notes', notes);
+  }
 
+void getNotes () async{
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.getStringList('notes');
+}
+
+  void saveDeadlines() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('deadlines', deadlines);
+  }
+
+  void getDeadLines () async{
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.getStringList('deadlines');
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getNotes();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,8 +77,13 @@ class _FirstScreenState extends State<FirstScreen> {
           : ListView.builder(
            itemCount: notes.length,
            itemBuilder: (context, index){
-             return const ListTile(
+             return ListTile(
+title: Text(notes[index]),
+               subtitle: Text(deadlines[index]),
+trailing: IconButton(onPressed: (){
+  //TODO ??? Logic for delete this note
 
+}, icon: const Icon(Icons.delete_forever)),
             );
           },
       ),
