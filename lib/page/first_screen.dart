@@ -29,8 +29,8 @@ class _FirstScreenState extends State<FirstScreen> {
           ),
         ),
           actions: const [
-            Icon(Icons.speaker_notes_rounded, size: 30.0),
             Icon(Icons.note_alt_outlined, size: 30.0),
+            Icon(Icons.speaker_notes_rounded, size: 30.0),
           ],
          ),
 
