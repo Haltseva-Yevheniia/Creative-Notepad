@@ -46,13 +46,7 @@ class _FirstScreenState extends State<FirstScreen> {
           : ListView.builder(
            itemCount: notes.length,
            itemBuilder: (context, index){
-             return ListTile(
-               trailing: IconButton(
-                   onPressed: () {
-                     
-                   },
-                   icon: const Icon(Icons.delete_forever),
-               ),
+             return const ListTile(
             );
           },
       ),
