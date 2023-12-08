@@ -29,8 +29,8 @@ class _FirstScreenState extends State<FirstScreen> {
           ),
         ),
           actions: const [
-            Icon(Icons.ac_unit, size: 30.0),
-            Icon(Icons.account_balance_sharp, size: 30.0),
+            Icon(Icons.note_alt_outlined, size: 30.0),
+            Icon(Icons.speaker_notes, size: 30.0),
           ],
          ),
 
@@ -46,8 +46,13 @@ class _FirstScreenState extends State<FirstScreen> {
           : ListView.builder(
            itemCount: notes.length,
            itemBuilder: (context, index){
-             return const ListTile(
-
+             return ListTile(
+               trailing: IconButton(
+                   onPressed: () {
+                     
+                   },
+                   icon: const Icon(Icons.delete_forever),
+               ),
             );
           },
       ),
