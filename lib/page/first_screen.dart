@@ -115,7 +115,7 @@ void getNotes () async{
       body: notes.isEmpty ? const Center(
           child: Text(
                 'Ваш нотаток пустий, додайте замітку',
-              style: TextStyle(
+               style: TextStyle(
                 fontSize: 17.0,
                 fontWeight: FontWeight.w500,
               ),
