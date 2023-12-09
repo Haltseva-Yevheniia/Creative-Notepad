@@ -11,24 +11,29 @@ class FirstScreen extends StatefulWidget {
 
 class _FirstScreenState extends State<FirstScreen> {
 
-  TextEditingController noteTextController = TextEditingController();
-  TextEditingController deadlineController = TextEditingController();
-  List<String> notes = ['buy', 'prise'];
-  List<String> deadlines=['02/01/2024', '20/12/2023'];
+  final noteTextController = TextEditingController();
+  final deadlineController = TextEditingController();
+  List<String> notes = [];
+  List<String> deadlines = [];
   List<NoteModel> notesToScreen = [];
 
-  get children => null;
-
-  void _addNote() {
+   void _addNote() {
     setState(() {
-    });
+       String addNoteText = noteTextController.text;
+       String addDeadlinesText = deadlineController.text;
+       notes.add(addNoteText);
+       deadlines.add(addDeadlinesText);
+       noteTextController.clear();
+       deadlineController.clear();
+      });
   }
+
   void saveNotes() async {
 final SharedPreferences prefs = await SharedPreferences.getInstance();
 prefs.setStringList('notes', notes);
   }
 
-void getNotes () async{
+  void getNotes () async{
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.getStringList('notes');
 }
@@ -55,25 +60,31 @@ void getNotes () async{
             child: ListView (
               children: [
               TextField(
+                keyboardType: TextInputType.text,
                 controller: noteTextController,
-                decoration: const InputDecoration(labelText: 'Note Text'),
+                decoration: const InputDecoration(
+                    labelText: 'Note Text'),
               ),
               TextField(
+                keyboardType: TextInputType.datetime,
                 controller: deadlineController,
-                decoration: const InputDecoration(labelText: 'Calendar for deadline'),
-              ),
-            ],),
+                decoration: const InputDecoration(
+                    labelText: 'Calendar for deadline'
+                ),
+                ),
+            ],
+            ),
           ),
           actions: [
             TextButton(
               onPressed: () {
+                _addNote();
                 Navigator.pop(context);
               },
               child: const Text('add'),
             ),
             TextButton(
               onPressed: () {
-                _addNote();
                 Navigator.pop(context);
               },
               child: const Text('cancel'),
@@ -125,12 +136,13 @@ void getNotes () async{
            itemCount: notes.length,
            itemBuilder: (context, index){
              return ListTile(
-title: Text(notes[index]),
-               subtitle: Text(deadlines[index]),
-trailing: IconButton(onPressed: (){
-  //TODO ??? Logic for delete this note
+                title: Text(notes[index]),
+                subtitle: Text(deadlines[index]),
+                trailing: IconButton(onPressed: (){
+              //TODO ??? Logic for delete this note
 
-}, icon: const Icon(Icons.delete_forever)),
+                },
+                    icon: const Icon(Icons.delete_forever)),
             );
           },
       ),
