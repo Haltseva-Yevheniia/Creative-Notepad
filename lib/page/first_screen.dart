@@ -13,6 +13,7 @@ class _FirstScreenState extends State<FirstScreen> {
 
   final noteTextController = TextEditingController();
   final deadlineController = TextEditingController();
+
   List<String> notes = [];
   List<String> deadlines = [];
   List<NoteModel> notesToScreen = [];
@@ -21,11 +22,24 @@ class _FirstScreenState extends State<FirstScreen> {
     setState(() {
        String addNoteText = noteTextController.text;
        String addDeadlinesText = deadlineController.text;
-       notes.add(addNoteText);
+
+       if (addNoteText.isNotEmpty){
+
+         notes.add(addNoteText);
+         noteTextController.clear();
+       }
        deadlines.add(addDeadlinesText);
-       noteTextController.clear();
        deadlineController.clear();
       });
+  }
+
+  void _delNote(index) {
+    setState(() {
+      if (index >= 0 && index < notes.length) {
+        notes.removeAt(index);
+        deadlines.removeAt(index);
+      }
+    });
   }
 
   void saveNotes() async {
@@ -130,12 +144,12 @@ prefs.setStringList('notes', notes);
            itemCount: notes.length,
            itemBuilder: (context, index){
              return ListTile(
+                leading: const Icon(Icons.star_purple500),
                 title: Text(notes[index]),
                 subtitle: Text(deadlines[index]),
                 trailing: IconButton(onPressed: (){
-              //TODO Vitalik Logic for delete this note
-
-                },
+                  _delNote(index);
+               },
                     icon: const Icon(Icons.delete_forever)),
             );
           },
