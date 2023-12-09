@@ -1,5 +1,6 @@
-
+import 'package:creative_notepad/components/note_model.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FirstScreen extends StatefulWidget {
   const FirstScreen({super.key});
@@ -10,10 +11,92 @@ class FirstScreen extends StatefulWidget {
 
 class _FirstScreenState extends State<FirstScreen> {
 
-  TextEditingController noteTextController = TextEditingController();
+  final noteTextController = TextEditingController();
+  final deadlineController = TextEditingController();
   List<String> notes = [];
+  List<String> deadlines = [];
+  List<NoteModel> notesToScreen = [];
+
+   void _addNote() {
+    setState(() {
+       String addNoteText = noteTextController.text;
+       String addDeadlinesText = deadlineController.text;
+       notes.add(addNoteText);
+       deadlines.add(addDeadlinesText);
+       noteTextController.clear();
+       deadlineController.clear();
+      });
+  }
+
+  void saveNotes() async {
+final SharedPreferences prefs = await SharedPreferences.getInstance();
+prefs.setStringList('notes', notes);
+  }
+
+  void getNotes () async{
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.getStringList('notes');
+}
 
 
+  void getDeadLines () async{
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.getStringList('deadlines');
+  }
+
+  void _showDialogForAddNote() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add Note'),
+          content: SizedBox(
+            width: 300,
+            height: 130,
+            child: ListView (
+              children: [
+              TextField(
+                keyboardType: TextInputType.text,
+                controller: noteTextController,
+                decoration: const InputDecoration(
+                    labelText: 'Note Text'),
+              ),
+              TextField(
+                keyboardType: TextInputType.datetime,
+                controller: deadlineController,
+                decoration: const InputDecoration(
+                    labelText: 'Calendar for deadline'
+                ),
+                ),
+            ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                _addNote();
+                Navigator.pop(context);
+              },
+              child: const Text('add'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getNotes();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +120,7 @@ class _FirstScreenState extends State<FirstScreen> {
       body: notes.isEmpty ? const Center(
           child: Text(
                 'Ваш нотаток пустий, додайте замітку',
-              style: TextStyle(
+               style: TextStyle(
                 fontSize: 17.0,
                 fontWeight: FontWeight.w500,
               ),
@@ -46,12 +129,25 @@ class _FirstScreenState extends State<FirstScreen> {
           : ListView.builder(
            itemCount: notes.length,
            itemBuilder: (context, index){
-              return const ListTile(
+             return ListTile(
+                title: Text(notes[index]),
+                subtitle: Text(deadlines[index]),
+                trailing: IconButton(onPressed: (){
+              //TODO ??? Logic for delete this note
 
+                },
+                    icon: const Icon(Icons.delete_forever)),
             );
           },
       ),
-      floatingActionButton: FloatingActionButton(onPressed: (){}),
+      floatingActionButton: FloatingActionButton(
+          onPressed:  _showDialogForAddNote,
+          child: const Icon(Icons.edit_note),
+       // TODO Oleg Add icon to this button
+
+        // TODO Vitalik function showDialog... with AlertDialog with TextField for noteText and TextField with Calendar for deadline
+
+      ),
     );
   }
 }
