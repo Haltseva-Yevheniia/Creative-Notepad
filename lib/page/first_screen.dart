@@ -133,7 +133,7 @@ prefs.setStringList('notes', notes);
                 title: Text(notes[index]),
                 subtitle: Text(deadlines[index]),
                 trailing: IconButton(onPressed: (){
-              //TODO ??? Logic for delete this note
+              //TODO Vitalik Logic for delete this note
 
                 },
                     icon: const Icon(Icons.delete_forever)),
@@ -143,9 +143,8 @@ prefs.setStringList('notes', notes);
       floatingActionButton: FloatingActionButton(
           onPressed:  _showDialogForAddNote,
           child: const Icon(Icons.edit_note),
-       // TODO Oleg Add icon to this button
 
-        // TODO Vitalik function showDialog... with AlertDialog with TextField for noteText and TextField with Calendar for deadline
+        // TODO TextField with Calendar for deadline
 
       ),
     );
