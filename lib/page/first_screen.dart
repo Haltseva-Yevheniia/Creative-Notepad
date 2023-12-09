@@ -1,5 +1,6 @@
 import 'package:creative_notepad/components/note_model.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FirstScreen extends StatefulWidget {
@@ -10,38 +11,48 @@ class FirstScreen extends StatefulWidget {
 }
 
 class _FirstScreenState extends State<FirstScreen> {
-
   final noteTextController = TextEditingController();
   final deadlineController = TextEditingController();
   List<String> notes = [];
   List<String> deadlines = [];
   List<NoteModel> notesToScreen = [];
 
-   void _addNote() {
+  void _addNote() {
     setState(() {
-       String addNoteText = noteTextController.text;
-       String addDeadlinesText = deadlineController.text;
-       notes.add(addNoteText);
-       deadlines.add(addDeadlinesText);
-       noteTextController.clear();
-       deadlineController.clear();
-      });
+      String addNoteText = noteTextController.text;
+      String addDeadlinesText = deadlineController.text;
+      notes.add(addNoteText);
+      deadlines.add(addDeadlinesText);
+      noteTextController.clear();
+      deadlineController.clear();
+    });
+    saveNotes();
+    saveDeadlines();
   }
 
-  void saveNotes() async {
-final SharedPreferences prefs = await SharedPreferences.getInstance();
-prefs.setStringList('notes', notes);
+  Future<void> saveNotes() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('notes', notes);
   }
 
-  void getNotes () async{
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.getStringList('notes');
-}
+  Future<void> getNotes() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      notes = prefs.getStringList('notes') ??
+          []; // Читаєм список по ключу і відразу записуєм значення з локальної бази в нашу зміну
+    });
+  }
 
-
-  void getDeadLines () async{
+  void saveDeadlines() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.getStringList('deadlines');
+    prefs.setStringList('deadlines', deadlines);
+  }
+
+  void getDeadLines() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      deadlines = prefs.getStringList('deadlines') ?? [];
+    });
   }
 
   void _showDialogForAddNote() {
@@ -53,22 +64,21 @@ prefs.setStringList('notes', notes);
           content: SizedBox(
             width: 300,
             height: 130,
-            child: ListView (
+            child: ListView(
               children: [
-              TextField(
-                keyboardType: TextInputType.text,
-                controller: noteTextController,
-                decoration: const InputDecoration(
-                    labelText: 'Note Text'),
-              ),
-              TextField(
-                keyboardType: TextInputType.datetime,
-                controller: deadlineController,
-                decoration: const InputDecoration(
-                    labelText: 'Calendar for deadline'
+                TextField(
+                  keyboardType: TextInputType.text,
+                  controller: noteTextController,
+                  decoration: const InputDecoration(labelText: 'Note Text'),
                 ),
+                TextField(
+                  //keyboardType: TextInputType.datetime,
+                  controller: deadlineController,
+                  decoration:
+                      const InputDecoration(labelText: 'Calendar for deadline'),
+                  onTap: selectDate,
                 ),
-            ],
+              ],
             ),
           ),
           actions: [
@@ -96,6 +106,7 @@ prefs.setStringList('notes', notes);
     // TODO: implement initState
     super.initState();
     getNotes();
+    getDeadLines();
   }
 
   @override
@@ -105,48 +116,67 @@ prefs.setStringList('notes', notes);
         backgroundColor: Colors.blueGrey,
         centerTitle: true,
         title: const Text(
-         'Notepad',
+          'Notepad',
           style: TextStyle(
             fontWeight: FontWeight.w700,
             letterSpacing: 3,
           ),
         ),
-          actions: const [
-            Icon(Icons.event_note_outlined, size: 30.0),
-            Icon(Icons.note_alt_sharp, size: 30.0),
-          ],
-         ),
-
-      body: notes.isEmpty ? const Center(
-          child: Text(
+        actions: const [
+          Icon(Icons.event_note_outlined, size: 30.0),
+          Icon(Icons.note_alt_sharp, size: 30.0),
+        ],
+      ),
+      body: notes.isEmpty
+          ? const Center(
+              child: Text(
                 'Ваш нотаток пустий, додайте замітку',
-               style: TextStyle(
-                fontSize: 17.0,
-                fontWeight: FontWeight.w500,
+                style: TextStyle(
+                  fontSize: 17.0,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-             ),
             )
           : ListView.builder(
-           itemCount: notes.length,
-           itemBuilder: (context, index){
-             return ListTile(
-                title: Text(notes[index]),
-                subtitle: Text(deadlines[index]),
-                trailing: IconButton(onPressed: (){
-              //TODO Vitalik Logic for delete this note
-
-                },
-                    icon: const Icon(Icons.delete_forever)),
-            );
-          },
-      ),
+              itemCount: notes.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: ListTile(
+                    title: Text(notes[index]),
+                    subtitle: Text(deadlines[index]),
+                    trailing: IconButton(
+                        onPressed: () {
+                          //TODO Vitalik Logic for delete this note
+                        },
+                        icon: const Icon(Icons.delete_forever)),
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Colors.white, width: 1),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                  ),
+                );
+              },
+            ),
       floatingActionButton: FloatingActionButton(
-          onPressed:  _showDialogForAddNote,
-          child: const Icon(Icons.edit_note),
+        onPressed: _showDialogForAddNote,
+        child: const Icon(Icons.edit_note),
 
         // TODO TextField with Calendar for deadline
-
       ),
     );
+  }
+
+  Future<void> selectDate() async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2025),
+    );
+    if (pickedDate != null) {
+      setState(() {
+       deadlineController.text = DateFormat('dd-MM-yyyy').format(pickedDate);
+      });
+    }
   }
 }
