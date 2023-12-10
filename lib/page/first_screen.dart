@@ -33,15 +33,6 @@ class _FirstScreenState extends State<FirstScreen> {
       });
   }
 
-  void _delNote(index) {
-    setState(() {
-      if (index >= 0 && index < notes.length) {
-        notes.removeAt(index);
-        deadlines.removeAt(index);
-      }
-    });
-  }
-
   void saveNotes() async {
 final SharedPreferences prefs = await SharedPreferences.getInstance();
 prefs.setStringList('notes', notes);
@@ -148,7 +139,10 @@ prefs.setStringList('notes', notes);
                 title: Text(notes[index]),
                 subtitle: Text(deadlines[index]),
                 trailing: IconButton(onPressed: (){
-                  _delNote(index);
+                  setState(() {
+                    notes.removeAt(index);
+                    deadlines.removeAt(index);
+                  });
                },
                     icon: const Icon(Icons.delete_forever)),
             );
@@ -157,9 +151,6 @@ prefs.setStringList('notes', notes);
       floatingActionButton: FloatingActionButton(
           onPressed:  _showDialogForAddNote,
           child: const Icon(Icons.edit_note),
-
-        // TODO TextField with Calendar for deadline
-
       ),
     );
   }
