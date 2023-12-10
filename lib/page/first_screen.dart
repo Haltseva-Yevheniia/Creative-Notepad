@@ -152,6 +152,8 @@ class _FirstScreenState extends State<FirstScreen> {
                   setState(() {
                     notes.removeAt(index);
                     deadlines.removeAt(index);
+                    saveNotes();
+                    saveDeadlines();
                   });
                },
                     icon: const Icon(Icons.delete_forever)),
