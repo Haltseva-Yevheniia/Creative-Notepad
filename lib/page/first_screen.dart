@@ -38,19 +38,6 @@ class _FirstScreenState extends State<FirstScreen> {
   Future<void> saveNotes() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setStringList('notes', notes);
-
-  void _delNote(index) {
-    setState(() {
-      if (index >= 0 && index < notes.length) {
-        notes.removeAt(index);
-        deadlines.removeAt(index);
-      }
-    });
-  }
-
-  void saveNotes() async {
-final SharedPreferences prefs = await SharedPreferences.getInstance();
-prefs.setStringList('notes', notes);
   }
 
   Future<void> getNotes() async {
@@ -156,27 +143,22 @@ prefs.setStringList('notes', notes);
               ),
             )
           : ListView.builder(
-              itemCount: notes.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: ListTile(
-                    leading: const Icon(Icons.star_purple500),
-                    title: Text(notes[index]),
-                    subtitle: Text(deadlines[index]),
-                    trailing: IconButton(
-                        onPressed: () {
-                          _delNote(index);
-                        },
-                        icon: const Icon(Icons.delete_forever)),
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.white, width: 1),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                  ),
-                );
-              },
-            ),
+           itemCount: notes.length,
+           itemBuilder: (context, index){
+             return ListTile(
+                leading: const Icon(Icons.star_purple500),
+                title: Text(notes[index]),
+                subtitle: Text(deadlines[index]),
+                trailing: IconButton(onPressed: (){
+                  setState(() {
+                    notes.removeAt(index);
+                    deadlines.removeAt(index);
+                  });
+               },
+                    icon: const Icon(Icons.delete_forever)),
+            );
+          },
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showDialogForAddNote,
         child: const Icon(Icons.edit_note),
