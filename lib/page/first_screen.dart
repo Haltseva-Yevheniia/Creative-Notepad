@@ -13,26 +13,44 @@ class FirstScreen extends StatefulWidget {
 class _FirstScreenState extends State<FirstScreen> {
   final noteTextController = TextEditingController();
   final deadlineController = TextEditingController();
+
   List<String> notes = [];
   List<String> deadlines = [];
   List<NoteModel> notesToScreen = [];
 
-  void _addNote() {
+   void _addNote() {
     setState(() {
-      String addNoteText = noteTextController.text;
-      String addDeadlinesText = deadlineController.text;
-      notes.add(addNoteText);
-      deadlines.add(addDeadlinesText);
-      noteTextController.clear();
-      deadlineController.clear();
-    });
-    saveNotes();
-    saveDeadlines();
+       String addNoteText = noteTextController.text;
+       String addDeadlinesText = deadlineController.text;
+
+       if (addNoteText.isNotEmpty){
+
+         notes.add(addNoteText);
+         noteTextController.clear();
+       }
+       deadlines.add(addDeadlinesText);
+       deadlineController.clear();
+      });
+      saveNotes();
+      saveDeadlines();
   }
 
   Future<void> saveNotes() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setStringList('notes', notes);
+
+  void _delNote(index) {
+    setState(() {
+      if (index >= 0 && index < notes.length) {
+        notes.removeAt(index);
+        deadlines.removeAt(index);
+      }
+    });
+  }
+
+  void saveNotes() async {
+final SharedPreferences prefs = await SharedPreferences.getInstance();
+prefs.setStringList('notes', notes);
   }
 
   Future<void> getNotes() async {
@@ -143,11 +161,12 @@ class _FirstScreenState extends State<FirstScreen> {
                 return Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: ListTile(
+                    leading: const Icon(Icons.star_purple500),
                     title: Text(notes[index]),
                     subtitle: Text(deadlines[index]),
                     trailing: IconButton(
                         onPressed: () {
-                          //TODO Vitalik Logic for delete this note
+                          _delNote(index);
                         },
                         icon: const Icon(Icons.delete_forever)),
                     shape: RoundedRectangleBorder(
