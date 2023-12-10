@@ -24,7 +24,6 @@ class _FirstScreenState extends State<FirstScreen> {
        String addDeadlinesText = deadlineController.text;
 
        if (addNoteText.isNotEmpty){
-
          notes.add(addNoteText);
          noteTextController.clear();
        }
