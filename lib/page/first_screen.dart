@@ -23,12 +23,17 @@ class _FirstScreenState extends State<FirstScreen> {
        String addNoteText = noteTextController.text;
        String addDeadlinesText = deadlineController.text;
 
-       if (addNoteText.isNotEmpty){
+       if (addNoteText.isNotEmpty && addDeadlinesText.isNotEmpty){
          notes.add(addNoteText);
          noteTextController.clear();
+         deadlines.add(addDeadlinesText);
+         deadlineController.clear();
+       } else {
+         noteTextController.clear();
+         deadlineController.clear();
+
        }
-       deadlines.add(addDeadlinesText);
-       deadlineController.clear();
+
       });
       saveNotes();
       saveDeadlines();
@@ -118,6 +123,17 @@ class _FirstScreenState extends State<FirstScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueGrey,
+        leading: IconButton(
+          onPressed: (){
+            setState(() {
+              notes.clear();
+              deadlines.clear();
+              saveNotes();
+              saveDeadlines();
+            });
+          },
+          icon: const Icon(Icons.delete_forever) ,
+        ),
         centerTitle: true,
         title: const Text(
           'Notepad',
@@ -144,20 +160,27 @@ class _FirstScreenState extends State<FirstScreen> {
           : ListView.builder(
            itemCount: notes.length,
            itemBuilder: (context, index){
-             return ListTile(
-                leading: const Icon(Icons.star_purple500),
-                title: Text(notes[index]),
-                subtitle: Text(deadlines[index]),
-                trailing: IconButton(onPressed: (){
-                  setState(() {
-                    notes.removeAt(index);
-                    deadlines.removeAt(index);
-                    saveNotes();
-                    saveDeadlines();
-                  });
-               },
-                    icon: const Icon(Icons.delete_forever)),
-            );
+             return Padding(
+               padding: const EdgeInsets.all(18.0),
+               child: ListTile(
+                  leading: const Icon(Icons.star_purple500),
+                  title: Text(notes[index]),
+                  subtitle: Text(deadlines[index]),
+                  trailing: IconButton(onPressed: (){
+                    setState(() {
+                      notes.removeAt(index);
+                      deadlines.removeAt(index);
+                      saveNotes();
+                      saveDeadlines();
+                    });
+                 },
+                      icon: const Icon(Icons.delete_forever)),
+                 shape: RoundedRectangleBorder(
+                   side: const BorderSide(color: Colors.white, width: 1),
+                   borderRadius: BorderRadius.circular(5),
+                 ),
+               ),
+             );
           },
       ),
       floatingActionButton: FloatingActionButton(
